@@ -1,0 +1,69 @@
+data segment
+    s       dw 0d   
+    brojka  db 0d
+ends
+
+
+code segment
+    ;pri sekoj vnes na cifra
+    ;se azurira zbirot na parni cifri
+                         
+    vnes:
+        mov ah, 01h
+        int 21h
+        mov bl, al
+        cmp bl, 35  ;sporedi so taraba
+        je pechati
+                 
+        sub bl, 48d ;napravi go brojka, ascii konverzija        
+        mov dl, bl  ;vo dl go chuvame brojot
+                    ;za ako e paren da se dodade
+        xor ax,ax   ;resetiraj ax
+        mov al, bl  ;stavi ja vo al za da se deli so 2 (bx)
+        
+        mov bx, 2d   
+        div bl      ;=ax/bx
+    
+        cmp ah, 0   ;if ostatok = 0
+        je soberi
+        jmp vnes
+            
+            
+    soberi:    
+        add s, dx   ;s+=dx
+        jmp vnes 
+         
+         
+    pechati:      
+        ;add s, 48d  ;vrati go vo ascii  
+        xor bx,bx
+         
+        mov bx, 10d
+        mov ax, s         
+        div bl      ;=ax/bx
+        
+        while:
+            cmp al, 0     ;if al = 0 ->jump kraj
+            je kraj       ;znaci treba da se pecati
+                          ;samo ostatokot
+                        
+            mov dl, al    ;spremi go za pecatenje
+            add dl, 48d   ;ascii konverzija
+            
+            mov cl, ah    ;zacuvaj go ostatokot
+            
+            mov ah, 02h   ;ispecati cel broj    
+            int 21h     
+                      
+            mov al, cl    ;vo al stavi go ostatokot
+            xor ah, ah    ;od prethodnoto delenje 
+                          ;reset ah 
+            div bl        ;=ax/bx
+            jmp while    
+        
+    kraj:                  ;posledna cifra,
+        mov dl, ah         ;pecati go samo ostatokot
+        add dl, 48d        ;ascii konverzija
+        mov ah, 02h
+        int 21h          
+ends
