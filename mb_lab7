@@ -1,0 +1,159 @@
+CEKOR 1 PROSTO ROTIRANJE ---------------------
+
+root@kali:~# cd Desktop/
+root@kali:~/Desktop# nano poraka.txt
+
+
+Use "fg" to return to nano.
+
+[1]+  Stopped                 nano poraka.txt
+root@kali:~/Desktop# cat poraka.txt
+Jas sum Jovan. Student sum na FINKI. Dobiv kurs za Network Defender.
+root@kali:~/Desktop# cat poraka.txt | tr a-mn-zA-MN-Z n-za-mN-ZA-M > poraka_rot13.txt
+root@kali:~/Desktop# cat poraka_rot13.txt 
+Wnf fhz Wbina. Fghqrag fhz an SVAXV. Qbovi xhef mn Argjbex Qrsraqre.
+root@kali:~/Desktop# 
+root@kali:~/Desktop# 
+
+
+
+root@kali:~/Desktop# cat poraka.txt | tr a-ij-rs-zA-IJ-RS-Z j-rs-za-iJ-RS-ZA-I > shifrirana_jovan.txt
+root@kali:~/Desktop# cat shifrirana_jovan.txt 
+Sjb bdv Sxejw. Bcdmnwc bdv wj ORWTR. Mxkre tdab ij Wncfxat Mnonwmna.
+root@kali:~/Desktop# 
+root@kali:~/Desktop# 
+
+
+***Moj tekst:
+Jas sum Jovan. Student sum na FINKI. Dobiv kurs za Network Defender.
+
+***Rot9 implementacija:
+tr a-ij-rs-zA-IJ-RS-Z j-rs-za-iJ-RS-ZA-I
+
+***Shifrirana:
+Sjb bdv Sxejw. Bcdmnwc bdv wj ORWTR. Mxkre tdab ij Wncfxat Mnonwmna.
+
+***Shifrirana na kolegata:
+qv vaoa
+eta bdmhuet
+
+***Postapka brute-force, zavrshuvam koga ke ja najdam porakata shto ima smisla na makedonski:
+cat shifrirana_viktor | tr ‘d-za-cD-ZA-C’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘e-za-dE-ZA-D’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘f-za-eF-ZA-E’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘g-za-fG-ZA-F’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘h-za-gH-ZA-G’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘i-za-hI-ZA-H’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘j-za-iJ-ZA-I’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘k-za-jK-ZA-J’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘l-za-kL-ZA-K’ ‘a-zA-Z’
+cat shifrirana_viktor | tr ‘m-za-lM-ZA-L’ ‘a-zA-Z’
+
+***Rezultat = rot12:
+ej joco
+sho pravish
+
+CEKOR 2 - SIMETRICNA ENKR SO AES -----------------------
+
+***Moja datoteka:
+Jas sum Jovan. Student sum na FINKI. Dobiv kurs za Network Defender.
+
+***Shifrirana:
+���0A'�T��ٝQ+͔#;��ia͚����KyfLR��RK˛�
+ �W�ȵ�����}���UK;2����̟/�����n
+ 
+***Kluc:
+15056C699875233528B2719A454CC052
+
+
+***Shifrirana na viktor:
+�:�,��f��W!DX8�^�5
+�.2
+
+***Kluc:
+BF0FA52D4E37943C17D7D7AC2497F207
+
+***Reshenie:
+ej joco
+sho pravish
+
+
+3 ------------------------------------------------------
+
+
+
+
+4 ------------------------------------------------------
+
+***Poraka:
+Nova poraka od Jovan Velkovski blagodaram povelete
+
+*** md5:
+baf09145d129e8f90506e2a5a63b5fc5
+
+*** sha1:
+e8c6db8adf047d3dcbc1c0004934b176412497d6
+
+*** Poraka na viktor:
+partner vo laboratoriskata mi e jovan
+
+*** md5:
+f41c87f57a62e3361981728d846f540b
+
+*** sha1:
+d5f2d083fc60bfbe9964cbcad444ff5c11cdc517
+
+
+*** Moja izmeneta poraka:
+Nova poraka od Jovan Velkovski blagodaram povelete 2
+
+*** md5:
+19d4073208d5614e44fb72e3abd1833c
+
+*** sha1:
+e0f673bbbd30c32e8a0f46780c38158df512fe57
+
+*** Izmeneta poraka na viktor:
+partner vo laboratoriskata mi e jovan
+
+*** md5:
+ce40fc08c176debbfe402a941fd9c264
+
+*** sha1:
+214a6a225f296ad9329addd8f084c3c379079c4c
+
+Hash vrednostite se ednakvi.
+
+5 ----------------------------------------
+
+*** Prva poraka:
+Jovan cekor 5 poraka blagodaram
+
+hash: 71f901be644ad53954681f23e3cdbea9b99b3a96cc7da8d27faa80bde1b03a7d
+password: joco123
+
+*** Vtora poraka:
+Jovan cekor 5 vtora poraka blagodaram
+
+hash: eb6b8727305ab67cf38ce7865c3d2c3273ade772ea3410a93336886177c60067
+password: doktor123
+
+*** Prva poraka na viktor:
+zdravo 
+jas sum viktor
+partner vo laboratoriskata mi e jovan
+
+hash: ce9f47ac55a8fae6663f0423bf7de75738433f8e7fa71c7b9276e8d2b5c85464
+password: liki
+
+
+*** Vtora poraka na viktor:
+zdravo 
+jas sum viktor
+partner vo laboratoriskata mi e jovan
+izmena
+
+hash: 77fbeb81ce916187091b88f56fbc09106efc38915e3f324d0f82ee6d3167da68
+password:
+
+
