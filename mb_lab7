@@ -156,4 +156,43 @@ izmena
 hash: 77fbeb81ce916187091b88f56fbc09106efc38915e3f324d0f82ee6d3167da68
 password:
 
+-------- PKI -------------------------------------
+
+*** Moja poraka:
+pki cekor 1 jovan zdravo
+
+*** Public key:
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOSI18nUO1hlcs1hAiP2Yx5LsL
+1Ngv5eIuNhiSS+HBrfI0KMxnw7uUkjywGW9IeJQQAKA6/CR3Iv2gaHVf9cCswxK4
+x5TkubSwOlNzDPNozQp4uOnvwry/8GO8axtBcNbIQrxgVY65BBW5nsdlYFAZ+9IP
+KT25I6esma/KhuDzfQIDAQAB
+-----END PUBLIC KEY-----
+
+*** Shifrirana
+����k����Yլ(E!�����T�֒��2����.��j7�є|�R&|�YH�x
+                                             ���v-����Y��a%�D*�SFl� e���Ob8�z�D>o� .����L��<	�a�}�����E�#R6
+                                                                                                              �
+
+
+*** Shifrirana na kolegata;
+����gF�i���Es#�n��w&���(�#)��D�p��fN�N�D]�a�W�cQ×A���
+��m0�<�nH����o�0��)
+�sy򡽼��;B������D̳���W��x���ǻ_H�I��N��'
+
+*** Public key na viktor:
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTddgguRgpPLcpkXXrtJbw1Jtx
+2ZiHJ5jRCmqfbr+UO2B1SgjUaYfEcSLRRZ2JiSbG/QezrjjcuI24v5BERKacL130
+6fVCRBzJQU6/dnOmxi/i/tF1SAeRhQZL0qXs8i7zRvTsWp7LTnMi/hxRXxgVoPnn
+7EqaW/z4oepAr3/v4wIDAQAB
+-----END PUBLIC KEY-----
+
+
+*** Poraka deshifrirana od viktor:
+zdravo kolega 
+
+
+Cekor 2 --------------------------------------
+
 
