@@ -195,4 +195,42 @@ zdravo kolega
 
 Cekor 2 --------------------------------------
 
-s
+Moja datoteka:
+cekor 2 nova datoteka j o v a n
+
+PK:
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOSI18nUO1hlcs1hAiP2Yx5LsL
+1Ngv5eIuNhiSS+HBrfI0KMxnw7uUkjywGW9IeJQQAKA6/CR3Iv2gaHVf9cCswxK4
+x5TkubSwOlNzDPNozQp4uOnvwry/8GO8axtBcNbIQrxgVY65BBW5nsdlYFAZ+9IP
+KT25I6esma/KhuDzfQIDAQAB
+-----END PUBLIC KEY-----
+
+sig:
+�]e[L�z��E7��Ln����pAe	��E��,'	�� =�=o���nA�8+w���*Iհ����s�w� ��7�Ů��0�!��N��a��I?��'V���^�{�:p�z�d7yxcB�K-s��x
+
+
+Datoteka na kolegata:
+zdravo kolega
+
+PK na kolegata:
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTddgguRgpPLcpkXXrtJbw1Jtx
+2ZiHJ5jRCmqfbr+UO2B1SgjUaYfEcSLRRZ2JiSbG/QezrjjcuI24v5BERKacL130
+6fVCRBzJQU6/dnOmxi/i/tF1SAeRhQZL0qXs8i7zRvTsWp7LTnMi/hxRXxgVoPnn
+7EqaW/z4oepAr3/v4wIDAQAB
+-----END PUBLIC KEY-----
+
+SIG na kolegata:
+KG:a�{iU�A]��%,�R��A�1�
+                       ��*��k�͕�ɳ
+�BK�.W�g0]]�����`���B�a���B:~z��s��Tɲ���m�\����'���Q	��	�#�Z��aX{�6}N
+��$F�
+
+Izmeneta dat:
+zdravo zdravo kolega
+
+Rezultat:
+Verification Failure
+
+-------------------------
