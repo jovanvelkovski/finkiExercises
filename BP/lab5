@@ -1,0 +1,114 @@
+bazilab5
+
+1.
+SELECT *
+FROM SCHEDULED_TALKS
+WHERE DURATION > (SELECT AVG(DURATION) FROM SCHEDULED_TALKS)
+
+
+2.
+SELECT CUSTOMER_SSN, COUNT(DISTINCT PRODUCT_ID) AS VKUPNO
+FROM(
+SELECT *
+FROM PURCHASE
+WHERE PRODUCT_ID IN (SELECT C_PRODUCT_CODE
+                    FROM
+                    (SELECT S.STORE_ID
+                    FROM STORE_REVIEW S
+                    GROUP BY STORE_ID
+                    HAVING AVG(GRADE) > (SELECT AVG(GRADE)
+                                        FROM STORE_REVIEW
+                                        WHERE COMMENT_ != 'NULL'
+                                        AND C_CUSTOMER_ID IN (SELECT C_CUSTOMER_ID
+                                                             FROM STORE_REVIEW
+                                                             WHERE COMMENT_ != 'NULL')
+                                        )
+                    ) STORES
+                    INNER JOIN STOCK ST ON ST.STORE_ID=STORES.STORE_ID
+                    )
+)
+GROUP BY CUSTOMER_SSN
+
+
+3.
+SELECT P.C_CODE, P.NAME, P.PRICE, P.COUNTRY, C.NAME AS CATEGORY
+FROM (
+    SELECT PRODUCT_ID, SUM(QUANTITY) AS TOTAL
+    FROM PURCHASE
+    GROUP BY PRODUCT_ID
+    )
+    INNER JOIN PRODUCT P ON P.C_CODE = PRODUCT_ID
+    INNER JOIN CATEGORY C ON C.C_ID = CATEGORY_ID
+    WHERE TOTAL >= ALL(SELECT SUM(QUANTITY) AS TOTAL
+                        FROM PURCHASE
+                        GROUP BY PRODUCT_ID)
+
+
+4.
+SELECT DISTINCT STORE_ID, NAME, ADDRESS
+FROM STORE_REVIEW SR
+INNER JOIN STORE ON C_ID=SR.STORE_ID
+WHERE GRADE > 1
+AND C_CUSTOMER_ID IN (SELECT CUSTOMER_SSN
+                    FROM PURCHASE
+                    INNER JOIN STOCK S ON S.C_PRODUCT_CODE=PRODUCT_ID
+                    WHERE QUANTITY > 1
+                    AND SR.STORE_ID = STORE_ID)
+
+
+5.
+SELECT *
+FROM (
+    SELECT AGENT_SELLER_SSN, SUM(DURATION) AS TOTAL
+    FROM SCHEDULED_TALKS
+    GROUP BY AGENT_SELLER_SSN
+    )
+    INNER JOIN EMPLOYEE E ON E.C_SSN=AGENT_SELLER_SSN
+    WHERE TOTAL >= ALL(SELECT SUM(DURATION) AS TOTAL
+                    FROM SCHEDULED_TALKS
+                    GROUP BY AGENT_SELLER_SSN)
+
+
+6.
+SELECT *
+FROM (
+    SELECT S.STORE_ID, SUM(P.PRICE) AS TOTAL_PRICE
+    FROM PRODUCT P
+    INNER JOIN STOCK S ON P.C_CODE=S.C_PRODUCT_CODE
+    GROUP BY S.STORE_ID
+    ), PRODUCT P
+    WHERE TOTAL_PRICE >= ALL (SELECT SUM(P.PRICE) AS TOTAL_PRICE
+                            FROM PRODUCT P
+                            INNER JOIN STOCK S ON P.C_CODE=S.C_PRODUCT_CODE
+                            GROUP BY S.STORE_ID)
+
+7.
+SELECT *
+FROM (SELECT A.C_SSN AS SSN, COUNT(LANGUAGE) AS VKUPNO_JAZICI
+    FROM AGENT_SELLER A
+    INNER JOIN AGENT_SELLER_LANGUAGES L ON A.C_SSN=L.C_SSN
+    GROUP BY A.C_SSN
+    HAVING COUNT(LANGUAGE) >= ALL(SELECT COUNT(LANGUAGE) AS BROJ_NA_JAZICI
+                                FROM AGENT_SELLER A
+                                INNER JOIN AGENT_SELLER_LANGUAGES L ON A.C_SSN=L.C_SSN
+                                GROUP BY A.C_SSN)
+      )
+      INNER JOIN EMPLOYEE E ON E.C_SSN = SSN
+
+8.
+SELECT *
+FROM CUSTOMER
+WHERE C_SSN IN (SELECT CUSTOMER_SSN
+                        FROM PURCHASE P
+                        GROUP BY CUSTOMER_SSN
+                        HAVING SUM(P.QUANTITY) >= ALL(SELECT SUM(QUANTITY)
+                                                    FROM PURCHASE
+                                                    GROUP BY CUSTOMER_SSN)
+                        AND CUSTOMER_SSN IN (SELECT CUSTOMER_ID 
+                                            FROM PRODUCT_REVIEW
+                                            WHERE COMMENT_ != 'NULL')
+                        AND  CUSTOMER_SSN IN (SELECT C_CUSTOMER_ID
+                                            FROM STORE_REVIEW
+                                            WHERE COMMENT_ != 'NULL'
+                        )
+                )
