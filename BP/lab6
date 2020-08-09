@@ -1,0 +1,204 @@
+	bazilab6
+
+1.
+CREATE TRIGGER zachuvaj_razgovori
+AFTER DELETE ON customer
+FOR EACH ROW
+BEGIN
+    UPDATE scheduled_talks
+    SET customer_ssn = NULL
+    WHERE OLD.c_ssn = customer_ssn
+END;
+
+
+
+2.
+ALTER TABLE agent_seller
+ADD totalnumberofcalls NUMBER
+
+
+UPDATE agent_seller
+SET totalnumberofcalls = (SELECT t
+                        FROM (SELECT agent_seller_ssn, COUNT(*) as t
+                        FROM scheduled_talks
+                        GROUP BY agent_seller_ssn)
+ WHERE c_ssn = agent_seller_ssn)
+
+
+ CREATE TRIGGER agent_seller_total_update
+AFTER INSERT ON scheduled_talks
+FOR EACH ROW
+WHEN NEW.agent_seller_ssn IS NOT NULL
+BEGIN
+    UPDATE agent_seller
+    SET totalnumberofcalls = totalnumberofcalls + 1
+    WHERE agent_seller.c_ssn = NEW.agent_seller_ssn
+END;
+
+
+
+3.
+ALTER TABLE store
+ADD stock_quantity NUMBER
+
+
+UPDATE store
+SET stock_quantity = (SELECT q
+                      FROM (SELECT store_id, SUM(count) as q
+                            FROM stock
+                            GROUP BY store_id)
+ WHERE c_id = store_id)
+
+
+CREATE TRIGGER stock_quantity_keeptrackonupdate
+AFTER UPDATE OF count ON stock
+FOR EACH ROW
+BEGIN
+    UPDATE store
+    SET stock_quantity = stock_quantity - OLD.count + NEW.count
+    WHERE NEW.store_id = store.c_id
+END;
+
+
+CREATE TRIGGER stock_quantity_keeptrackoninsert
+AFTER INSERT ON stock
+FOR EACH ROW
+BEGIN
+    UPDATE store
+    SET stock_quantity = stock_quantity + NEW.count
+    WHERE NEW.store_id = store.c_id
+END;
+
+
+CREATE TRIGGER stock_quantity_keeptrackondelete
+AFTER DELETE ON stock
+FOR EACH ROW
+BEGIN
+    UPDATE store
+    SET stock_quantity = stock_quantity - OLD.count
+    WHERE NEW.store_id = store.c_id
+END;
+
+
+
+4.
+ALTER TABLE store
+ADD total_goods_price NUMBER
+
+
+UPDATE store
+SET total_goods_price = (SELECT p
+                         FROM (SELECT store_id, sum(price*count) as p
+                               FROM product p
+                               INNER JOIN stock s ON s.c_product_code = c_code
+                               INNER JOIN store st ON st.c_id = s.store_id
+                               GROUP BY store_id)
+ WHERE c_id = store_id)
+
+
+CREATE TRIGGER total_goods_price_changeproductquantity
+AFTER UPDATE OF count ON stock
+FOR EACH ROW
+BEGIN
+    UPDATE store
+    SET total_goods_price = total_goods_price - OLD.count * (SELECT price
+                                                            FROM product p
+                                                            INNER JOIN stock s ON s.c_product_code = c_code
+                                                            INNER JOIN store st ON st.c_id = s.store_id
+                                                            WHERE OLD.c_product_code = s.c_product_code
+                                                            AND OLD.store_id = s.store_id)
+                                              + NEW.count * (SELECT price
+                                                            FROM product p
+                                                            INNER JOIN stock s ON s.c_product_code = c_code
+                                                            INNER JOIN store st ON st.c_id = s.store_id
+                                                            WHERE OLD.c_product_code = s.c_product_code
+                                                            AND OLD.store_id = s.store_id)
+    WHERE NEW.store_id = store.c_id
+END;
+
+
+CREATE TRIGGER total_goods_price_insertnewproduct
+AFTER INSERT ON stock
+FOR EACH ROW
+BEGIN
+    UPDATE store
+    SET total_goods_price = total_goods_price + NEW.count * (SELECT price
+                                                            FROM product p
+                                                            INNER JOIN stock s ON s.c_product_code = c_code
+                                                            INNER JOIN store st ON st.c_id = s.store_id
+                                                            WHERE NEW.c_product_code = s.c_product_code
+                                                            AND NEW.store_id = s.store_id)
+    WHERE NEW.store_id = store.c_id
+END; 
+
+
+CREATE TRIGGER total_goods_price_deleteproduct
+AFTER DELETE ON stock
+FOR EACH ROW
+BEGIN
+    UPDATE store
+    SET total_goods_price = total_goods_price - OLD.count * (SELECT price
+                                                            FROM product p
+                                                            INNER JOIN stock s ON s.c_product_code = c_code
+                                                            INNER JOIN store st ON st.c_id = s.store_id
+                                                            WHERE OLD.c_product_code = s.c_product_code
+                                                            AND OLD.store_id = s.store_id)
+    WHERE NEW.store_id = store.c_id
+END;
+
+
+CREATE TRIGGER total_goods_price_changeprice
+AFTER UPDATE OF price ON product
+FOR EACH ROW
+BEGIN
+    UPDATE store
+    SET total_goods_price = total_goods_price - OLD.price * (SELECT count
+                                                            FROM stock
+                                                            WHERE OLD.c_code = stock.c_product_code)
+                                              + NEW.price * (SELECT count
+                                                            FROM stock
+                                                            WHERE OLD.c_code = stock.c_product_code)
+    WHERE store.c_id IN (SELECT store_id
+                         FROM stock
+                         WHERE OLD.c_code = c_product_code)
+END;
+
+********************************************
+dopolnitelno:
+ALTER TABLE customer
+add points NUMBER
+
+
+UPDATE customer
+SET points = (SELECT count(quantity)
+              FROM (SELECT customer_ssn, quantity
+                    FROM purchase)
+              WHERE c_ssn = customer_ssn
+              AND quantity < 20)
+              
+			  
+UPDATE customer
+SET points = points + (SELECT 2 * count(quantity)
+              FROM (SELECT customer_ssn, quantity
+                    FROM purchase)
+              WHERE c_ssn = customer_ssn
+              AND quantity > 20)			  
+             
+CREATE OR REPLACE TRIGGER points_customer_insert
+AFTER
+INSERT ON PURCHASE
+FOR EACH ROW
+BEGIN
+    IF :NEW.quantity < 20
+    THEN
+        UPDATE customer
+        SET points = points + 1
+        WHERE :NEW.customer_ssn = customer.c_ssn
+    END IF;
+    IF :NEW.quantity > 20
+    THEN
+        UPDATE customer
+        SET points = points + 2 
+        WHERE :NEW.customer_ssn = customer.c_ssn
+    END IF;
+END;
